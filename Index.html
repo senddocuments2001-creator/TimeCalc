@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-teal-50 to-teal-100 min-h-screen p-6 flex items-center justify-center">
+  <div class="max-w-2xl w-full mx-auto bg-white/80 backdrop-blur-lg border border-white rounded-3xl shadow-2xl p-8">
+    <h1 class="text-3xl font-bold mb-6 text-center text-teal-700 tracking-wide">Time Calculator</h1>
+
+    <div class="flex items-center justify-between mb-6 bg-teal-50 p-3 rounded-xl border border-teal-200">
+      <label class="flex items-center gap-2 text-sm font-medium text-teal-700">
+        <input type="checkbox" id="mode24" class="w-4 h-4 accent-teal-600"> 24-Hour Mode
+      </label>
+      <label class="flex items-center gap-2 text-sm font-medium text-teal-700">
+        <input type="checkbox" id="ampm" class="w-4 h-4 accent-teal-600"> AM/PM Output
+      </label>
+    </div>
+
+    <div id="inputs" class="space-y-4">
+      <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200">
+        <select class="op w-20 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300">
+          <option value="add">+</option>
+          <option value="sub">-</option>
+        </select>
+        <input type="number" class="hVal w-24 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300" placeholder="Hours" />
+        <input type="number" class="mVal w-24 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300" placeholder="Minutes" />
+      </div>
+    </div>
+
+    <button id="addBtn" class="mt-4 w-full bg-teal-600 text-white py-3 rounded-xl text-lg font-semibold shadow-md hover:bg-teal-700 transition">+ Add Row</button>
+
+    <div id="result" class="mt-6 text-center text-3xl font-bold text-teal-800"></div>
+  </div>
+
+  <script>
+    const inputsDiv = document.getElementById("inputs");
+
+    document.getElementById("addBtn").onclick = () => {
+      const block = document.createElement("div");
+      block.className = "flex items-center gap-3 bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200";
+      block.innerHTML = `
+        <select class=\"op w-20 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300\"> 
+          <option value=\"add\">+</option>
+          <option value=\"sub\">-</option>
+        </select>
+        <input type=\"number\" class=\"hVal w-24 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300\" placeholder=\"Hours\" />
+        <input type=\"number\" class=\"mVal w-24 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300\" placeholder=\"Minutes\" />
+      `;
+      inputsDiv.appendChild(block);
+      autoBind();
+      calculate();
+    };
+
+    function autoBind() {
+      document.querySelectorAll('input, select').forEach(el => {
+        el.oninput = calculate;
+        el.onchange = calculate;
+      });
+    }
+
+    function calculate() {
+      let totalMinutes = 0;
+
+      document.querySelectorAll("#inputs > div").forEach(row => {
+        const h = parseInt(row.querySelector('.hVal').value) || 0;
+        const m = parseInt(row.querySelector('.mVal').value) || 0;
+        const op = row.querySelector('.op').value;
+
+        const mins = h * 60 + m;
+        if (op === "add") totalMinutes += mins;
+        else totalMinutes -= mins;
+      });
+
+      let hours = Math.floor(Math.abs(totalMinutes) / 60);
+      let minsFinal = Math.abs(totalMinutes) % 60;
+      const sign = totalMinutes < 0 ? "- " : "";
+
+      const use24 = document.getElementById('mode24')?.checked;
+      const useAmPm = document.getElementById('ampm')?.checked;
+
+      if (use24) hours = hours % 24;
+
+      let output;
+      if (useAmPm) {
+        const suffix = hours >= 12 ? 'PM' : 'AM';
+        const hr12 = hours % 12 === 0 ? 12 : hours % 12;
+        output = `${sign}${hr12}h ${minsFinal}m ${suffix}`;
+      } else {
+        output = `${sign}${hours}h ${minsFinal}m`;
+      }
+
+      document.getElementById("result").innerText = output;
+    }
+
+    autoBind();
+    calculate();
+  </script>
+</body>
+</html>
