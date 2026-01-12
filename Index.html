@@ -104,16 +104,11 @@
       Page Calculations
     </h2>
     <div class="overflow-x-auto rounded-lg border border-gray-200">
+      
       <table class="w-full text-xs">
-        <thead class="bg-gradient-to-r from-indigo-50 to-purple-50">
-          <tr>
-            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">Page</th>
-            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">30</th>
-            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">32</th>
-            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">34</th>
-            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">36</th>
-            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-indigo-600 bg-indigo-50">Total</th>
-          </tr>
+
+        
+        <thead id="calcHead" class="bg-gradient-to-r from-indigo-50 to-purple-50">
         </thead>
         <tbody id="calcBody" class="divide-y divide-gray-200"></tbody>
         <tfoot class="bg-gradient-to-r from-gray-50 to-gray-100 border-t-2 border-gray-300">
@@ -259,7 +254,31 @@ function removeTP(issueIdx, tpIdx) {
 renderIssues();
 
 /* ================= PAGE CALC DATA ================= */
-const sizes = [30,32,34,36];
+const sizes = [];
+for (let s = 28; s <= 44; s += 2) {
+  sizes.push(s);
+}
+
+function buildPagesFromTP() {
+  // total TP count
+  const totalTP = issues.reduce((sum, i) => sum + i.tp.length, 0);
+
+  const pages = [];
+
+  for (let i = 0; i < totalTP; i++) {
+    const v = {};
+    sizes.forEach(s => v[s] = 0); // initialize all sizes
+
+    pages.push({
+      page: 2 + i,
+      v
+    });
+  }
+
+  return pages;
+}
+
+
 
 let pages = [
   { page: 2, v:{30:28,32:42,34:42,36:28} },
@@ -275,44 +294,131 @@ let pages = [
 const body = document.getElementById("calcBody");
 const footer = document.getElementById("calcFooter");
 
-function renderCalc() {
-  body.innerHTML = "";
-  let totals = {30:0,32:0,34:0,36:0};
-  let grand = 0;
+function renderCalcHead() {
+  const thead = document.getElementById("calcHead");
+  thead.innerHTML = "";
 
-  pages.forEach((r,ri)=>{
+  if (!pages.length) return;
+
+  // extract sizes from pages variable
+  const sizes = Object.keys(pages[0].v);
+
+  const tr = document.createElement("tr");
+
+  // Page column
+  tr.innerHTML = `
+    <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">
+      Page
+    </th>
+  `;
+
+  // Size columns
+  sizes.forEach(s => {
+    tr.innerHTML += `
+      <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">
+        ${s}
+      </th>
+    `;
+  });
+
+  // Total column
+  tr.innerHTML += `
+    <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-indigo-600 bg-indigo-50">
+      Total
+    </th>
+  `;
+
+  thead.appendChild(tr);
+}
+
+/* ================= UPDATED CALCULATION LOGIC ================= */
+
+function renderCalc() {
+  const body = document.getElementById("calcBody");
+  const footerTr = document.getElementById("calcFooter");
+  const thead = document.getElementById("calcHead");
+  
+  body.innerHTML = "";
+  thead.innerHTML = "";
+
+  // 1. Prepare Sizes (28-44)
+  const sizes = [];
+  for (let s = 28; s <= 44; s += 2) sizes.push(s);
+
+  // 2. Render Header
+  let headHtml = `<th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">Page (TP)</th>`;
+  sizes.forEach(s => {
+    headHtml += `<th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">${s}</th>`;
+  });
+  headHtml += `<th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-indigo-600 bg-indigo-50">Total</th>`;
+  thead.innerHTML = headHtml;
+
+  // 3. Flatten Issues to "TP Rows"
+  // This creates a flat list of every TP assigned across all issues
+  const allTPRows = [];
+  issues.forEach(issue => {
+    issue.tp.forEach((tpValue, idx) => {
+      allTPRows.push({
+        tp: tpValue,
+        layer: issue.layer[idx] || 0
+      });
+    });
+  });
+
+  // 4. Calculate and Render Rows
+  const columnTotals = {};
+  sizes.forEach(s => columnTotals[s] = 0);
+  let grandTotal = 0;
+
+  allTPRows.forEach((row) => {
     let rowTotal = 0;
     const tr = document.createElement("tr");
     tr.className = "hover:bg-indigo-50/50 transition-colors";
-    tr.innerHTML = `<td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs">${r.page}</td>`;
 
-    sizes.forEach(s=>{
-      const val = r.v[s];
-      rowTotal += val;
-      totals[s] += val;
+    // TP Label Column
+    tr.innerHTML = `<td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs">TP ${row.tp}</td>`;
+
+    sizes.forEach(s => {
+      // LOGIC: Size Config Value * Layer Value
+      const sizeConfigVal = sizeConfig[s] || 0;
+      const calculatedValue = sizeConfigVal * row.layer;
+      
+      rowTotal += calculatedValue;
+      columnTotals[s] += calculatedValue;
+
       tr.innerHTML += `
-        <td class="border-r border-gray-200 px-2 py-1 text-center">
-          <input type="number" value="${val}"
-            class="w-14 text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
-            oninput="pages[${ri}].v[${s}]=Number(this.value)||0;renderCalc()">
-        </td>
-      `;
+        <td class="border-r border-gray-200 px-2 py-1 text-center text-xs text-gray-600">
+          ${calculatedValue}
+        </td>`;
     });
 
-    grand += rowTotal;
+    grandTotal += rowTotal;
     tr.innerHTML += `<td class="px-2 py-1 text-center font-bold text-indigo-600 bg-indigo-50 text-xs">${rowTotal}</td>`;
     body.appendChild(tr);
   });
 
-  const footerTr = document.getElementById("calcFooter");
+  // 5. Render Footer
   footerTr.innerHTML = `
     <td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs">Total</td>
-    ${sizes.map(s=>`<td class="border-r border-gray-200 px-2 py-1 text-center font-bold text-indigo-600 text-xs">${totals[s]}</td>`).join("")}
-    <td class="px-2 py-1 text-center font-bold text-sm text-indigo-600">${grand}</td>
+    ${sizes.map(s => `
+      <td class="border-r border-gray-200 px-2 py-1 text-center font-bold text-indigo-600 text-xs">${columnTotals[s]}</td>
+    `).join("")}
+    <td class="px-2 py-1 text-center font-bold text-sm text-indigo-600">${grandTotal}</td>
   `;
 }
 
+// Ensure Size Configuration inputs trigger a re-calculation
+// Update your Size Config loop (around line 140) to include renderCalc():
+/* oninput="
+    const val = Number(this.value);
+    if (val >= 1 && val <= 5) {
+      sizeConfig[${size}] = val;
+      renderCalc(); // <--- Add this
+    }
+    ...
+*/
 renderCalc();
+
 </script>
 
 </body>
