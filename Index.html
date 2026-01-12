@@ -2,120 +2,317 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Time Calculator By Jainish</title>
+  <title>Project Creation</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: #667eea;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      transition: all 0.2s ease;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-teal-50 to-teal-100 min-h-screen p-6 flex items-center justify-center">
-  <div class="max-w-2xl w-full mx-auto bg-white/80 backdrop-blur-lg border border-white rounded-3xl shadow-2xl p-8">
-    <h1 class="text-3xl font-bold mb-6 text-center text-teal-700 tracking-wide">Time Calculator</h1>
 
-    <div class="flex items-center justify-between mb-6 bg-teal-50 p-3 rounded-xl border border-teal-200">
-      <label class="flex items-center gap-2 text-sm font-medium text-teal-700">
-        <input type="checkbox" id="mode24" class="w-4 h-4 accent-teal-600"> 24-Hour Mode
-      </label>
-      <label class="flex items-center gap-2 text-sm font-medium text-teal-700">
-        <input type="checkbox" id="ampm" class="w-4 h-4 accent-teal-600"> AM/PM Output
-      </label>
+<body class="p-2 font-sans">
+
+<div class="max-w-7xl mx-auto space-y-3">
+
+  <!-- ================= HEADER ================= -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-xl font-bold text-white mb-0.5">Project Creation</h1>
+      <p class="text-indigo-100 text-xs">Manage issues, metrics, and page calculations</p>
     </div>
+    <span class="px-2 py-0.5 bg-white/20 text-white rounded-full text-xs font-medium backdrop-blur-md">classmate</span>
+  </div>
 
-    <div id="inputs" class="space-y-4">
-      <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200">
-        <select class="op w-20 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300">
-          <option value="add">+</option>
-          <option value="sub">-</option>
-        </select>
-        <input type="number" class="hVal w-24 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300" placeholder="Hours" />
-        <input type="number" class="mVal w-24 p-2 border rounded-lg bg-white shadow-sm hover:border-teal-400 focus:ring-2 focus:ring-teal-300" placeholder="Minutes" />
+  <!-- ================= ISSUE + MTR SECTION ================= -->
+  <div class="grid grid-cols-3 gap-3">
+
+    <!-- Issue Table Card -->
+    <div class="col-span-2 glass-effect rounded-lg p-3 shadow-xl">
+      <h2 class="text-sm font-bold text-gray-800 mb-2 flex items-center gap-1">
+        <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4z"/></svg>
+        Issues & Metrics
+      </h2>
+      
+      <!-- Size Configuration -->
+      <div class="mb-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
+        <p class="text-xs font-semibold text-gray-700 mb-2">Size Configuration (1-5)</p>
+        <div class="grid grid-cols-9 gap-2" id="sizeInputs"></div>
+      </div>
+      
+      <div class="overflow-x-auto rounded-lg border border-gray-200">
+        <table class="w-full text-xs">
+          <thead class="bg-gradient-to-r from-indigo-50 to-purple-50">
+            <tr>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-left font-semibold text-gray-700">Issue</th>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">MTR</th>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">TP</th>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">Layer</th>
+            </tr>
+          </thead>
+          <tbody id="issueTable" class="divide-y divide-gray-200"></tbody>
+        </table>
       </div>
     </div>
 
-    <button id="addBtn" class="mt-4 w-full bg-teal-600 text-white py-3 rounded-xl text-lg font-semibold shadow-md hover:bg-teal-700 transition">+ Add Row</button>
+    <!-- Page Meta Card -->
+    <div class="glass-effect rounded-lg p-3 shadow-xl h-fit">
+      <h2 class="text-sm font-bold text-gray-800 mb-2 flex items-center gap-1">
+        <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zm8-8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/></svg>
+        Page Meta
+      </h2>
+      <div class="space-y-2">
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
+          <p class="text-xs text-gray-600 font-medium mb-0.5">PAGES</p>
+          <p class="text-xs font-bold text-indigo-600">30 | 32 | 34 | 36</p>
+        </div>
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
+          <p class="text-xs text-gray-600 font-medium mb-0.5">P VALUE</p>
+          <p class="text-xs font-bold text-gray-800">54½ <span class="text-xs text-gray-600">≈ 53</span></p>
+        </div>
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
+          <p class="text-xs text-gray-600 font-medium mb-0.5">LENGTH</p>
+          <p class="text-xs font-bold text-gray-800">43.25 <span class="text-xs text-gray-600">(41)</span></p>
+        </div>
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
+          <p class="text-xs text-gray-600 font-medium mb-0.5">WASTE</p>
+          <p class="text-xs font-bold text-orange-600">+1.5</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <div id="result" class="mt-6 text-center text-3xl font-bold text-teal-800"></div>
-  </div><script>
-  const inputsDiv = document.getElementById("inputs");
+  <!-- ================= PAGE CALCULATION ================= -->
+  <div class="glass-effect rounded-lg p-3 shadow-xl">
+    <h2 class="text-sm font-bold text-gray-800 mb-2 flex items-center gap-1">
+      <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+      Page Calculations
+    </h2>
+    <div class="overflow-x-auto rounded-lg border border-gray-200">
+      <table class="w-full text-xs">
+        <thead class="bg-gradient-to-r from-indigo-50 to-purple-50">
+          <tr>
+            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">Page</th>
+            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">30</th>
+            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">32</th>
+            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">34</th>
+            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">36</th>
+            <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-indigo-600 bg-indigo-50">Total</th>
+          </tr>
+        </thead>
+        <tbody id="calcBody" class="divide-y divide-gray-200"></tbody>
+        <tfoot class="bg-gradient-to-r from-gray-50 to-gray-100 border-t-2 border-gray-300">
+          <tr id="calcFooter"></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
 
-  document.getElementById("addBtn").onclick = () => {
-    const block = document.createElement("div");
-    block.className =
-      "flex items-center gap-3 bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200";
-    block.innerHTML = `
-      <select class="op w-20 p-2 border rounded-lg bg-white">
-        <option value="add">+</option>
-        <option value="sub">-</option>
-      </select>
-      <input type="number" class="hVal w-24 p-2 border rounded-lg" placeholder="Hours" />
-      <input type="number" class="mVal w-24 p-2 border rounded-lg" placeholder="Minutes" />
+</div>
+
+<script>
+/* ================= SIZE CONFIGURATION (28-44 EVEN) ================= */
+const sizeConfig = {};
+const sizeInputsContainer = document.getElementById("sizeInputs");
+
+// Generate even numbers from 28 to 44
+for (let size = 28; size <= 44; size += 2) {
+  sizeConfig[size] = 1; // Default value
+  
+  const div = document.createElement("div");
+  div.className = "bg-gradient-to-r from-indigo-200 to-purple-50 rounded-lg p-2";
+  div.innerHTML = `
+    <label class="text-xs font-bold text-gray-700 block mb-1">${size}</label>
+    <input type="number" min="1" max="5" value="1"
+      class="w-full text-center border border-gray-300 rounded px-2 py-1 text-xs bg-white hover:border-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-300"
+      oninput="
+        const val = Number(this.value);
+        if (val >= 1 && val <= 5) {
+          sizeConfig[${size}] = val;
+        } else {
+          this.value = sizeConfig[${size}];
+        }
+      ">
+  `;
+  sizeInputsContainer.appendChild(div);
+}
+
+/* ================= ISSUE DATA ================= */
+const issues = [
+  { issue: "ISS01", mtr: 88.5, tp: [2], layer: [6] },
+  { issue: "ISS03", mtr: 105.25, tp: [3], layer: [6] },
+  { issue: "ISS07", mtr: 115.5, tp: [4], layer: [6] },
+  { issue: "ISS02", mtr: 100, tp: [5], layer: [6] },
+  { issue: "ISS04", mtr: 90, tp: [6], layer: [6] },
+  { issue: "ISS01", mtr: 100, tp: [7], layer: [6] },
+  { issue: "ISS09", mtr: 99.5, tp: [8], layer: [6] },
+  { issue: "ISS04", mtr: 82, tp: [9], layer: [6] },
+  { issue: "ISS20", mtr: 101, tp: [2], layer: [6] },
+  { issue: "ISS02", mtr: 106.5, tp: [3], layer: [6] },
+];
+const issueTable = document.getElementById("issueTable");
+
+function renderIssues() {
+  issueTable.innerHTML = "";
+  issues.forEach((r, i) => {
+    issueTable.innerHTML += `
+      <tr class="hover:bg-indigo-50/50 transition-colors">
+        <td class="border-r border-gray-200 px-2 py-1">
+          <input class="w-full text-center border border-gray-300 rounded px-1 py-0.5 text-xs font-medium bg-white hover:border-indigo-400 transition-colors"
+            value="${r.issue}"
+            oninput="issues[${i}].issue=this.value">
+        </td>
+
+        <td class="border-r border-gray-200 px-2 py-1">
+          <input type="number" class="w-full text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
+            value="${r.mtr}"
+            oninput="issues[${i}].mtr=Number(this.value)||0">
+        </td>
+
+        <td class="border-r border-gray-200 px-2 py-1">
+          <div class="space-y-0.5" id="tp-container-${i}"></div>
+          <button class="mt-0.5 w-full px-1 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-semibold rounded hover:shadow-lg transition-all"
+            onclick="addTP(${i})">+ TP</button>
+        </td>
+
+        <td class="px-2 py-1">
+          <div class="space-y-0.5" id="layer-container-${i}"></div>
+        </td>
+      </tr>
     `;
-    inputsDiv.appendChild(block);
-    autoBind();
-    calculate();
-  };
+  });
+  
+  // Render TP inputs after table is populated
+  issues.forEach((r, i) => {
+    const container = document.getElementById(`tp-container-${i}`);
+    if (container) {
+      container.innerHTML = r.tp.map((tpVal, tpIdx) => `
+        <div class="flex gap-1">
+          <input type="number" class="flex-1 text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
+            value="${tpVal}"
+            oninput="issues[${i}].tp[${tpIdx}]=Number(this.value)||0">
+          <button class="px-1 py-0.5 bg-red-500 text-white text-xs rounded hover:bg-red-600 hover:shadow-lg transition-all font-semibold"
+            onclick="removeTP(${i}, ${tpIdx})">✕</button>
+        </div>
+      `).join("");
+    }
+    
+    // Render Layer inputs
+    const layerContainer = document.getElementById(`layer-container-${i}`);
+    if (layerContainer) {
+      layerContainer.innerHTML = r.layer.map((layerVal, layerIdx) => `
+        <div class="flex gap-1">
+          <input type="number" class="flex-1 text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
+            value="${layerVal}"
+            oninput="issues[${i}].layer[${layerIdx}]=Number(this.value)||0">
+        </div>
+      `).join("");
+    }
+  });
+}
 
-  function autoBind() {
-    document.querySelectorAll("input, select").forEach(el => {
-      el.oninput = calculate;
-      el.onchange = calculate;
+function addTP(issueIdx) {
+  // Find the maximum TP value in the CURRENT issue
+  const currentMaxTP = Math.max(...issues[issueIdx].tp);
+  
+  // Add new TP to current issue (increment by 1)
+  issues[issueIdx].tp.push(currentMaxTP + 1);
+  issues[issueIdx].layer.push(6);
+  
+  // Update all subsequent rows - each gets the next incremental number
+  let nextTP = currentMaxTP + 2;
+  for (let i = issueIdx + 1; i < issues.length; i++) {
+    // Check if this row already has TPs
+    if (issues[i].tp.length > 0) {
+      // Update the first TP of this row to be the next sequential number
+      issues[i].tp[0] = nextTP;
+      nextTP++;
+    }
+  }
+  
+  renderIssues();
+}
+
+function removeTP(issueIdx, tpIdx) {
+  if (issues[issueIdx].tp.length > 1) {
+    issues[issueIdx].tp.splice(tpIdx, 1);
+    issues[issueIdx].layer.splice(tpIdx, 1); // Remove corresponding layer
+    renderIssues();
+  }
+}
+
+renderIssues();
+
+/* ================= PAGE CALC DATA ================= */
+const sizes = [30,32,34,36];
+
+let pages = [
+  { page: 2, v:{30:28,32:42,34:42,36:28} },
+  { page: 3, v:{30:12,32:18,34:18,36:12} },
+  { page: 4, v:{30:12,32:18,34:18,36:12} },
+  { page: 5, v:{30:14,32:21,34:21,36:14} },
+  { page: 6, v:{30:12,32:18,34:18,36:12} },
+  { page: 7, v:{30:12,32:18,34:18,36:12} },
+  { page: 8, v:{30:12,32:18,34:18,36:12} },
+  { page: 9, v:{30:12,32:18,34:18,36:12} },
+];
+
+const body = document.getElementById("calcBody");
+const footer = document.getElementById("calcFooter");
+
+function renderCalc() {
+  body.innerHTML = "";
+  let totals = {30:0,32:0,34:0,36:0};
+  let grand = 0;
+
+  pages.forEach((r,ri)=>{
+    let rowTotal = 0;
+    const tr = document.createElement("tr");
+    tr.className = "hover:bg-indigo-50/50 transition-colors";
+    tr.innerHTML = `<td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs">${r.page}</td>`;
+
+    sizes.forEach(s=>{
+      const val = r.v[s];
+      rowTotal += val;
+      totals[s] += val;
+      tr.innerHTML += `
+        <td class="border-r border-gray-200 px-2 py-1 text-center">
+          <input type="number" value="${val}"
+            class="w-14 text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
+            oninput="pages[${ri}].v[${s}]=Number(this.value)||0;renderCalc()">
+        </td>
+      `;
     });
-  }
 
-  function normalizeInput(row) {
-    let h = parseInt(row.querySelector(".hVal").value) || 0;
-    let m = parseInt(row.querySelector(".mVal").value) || 0;
+    grand += rowTotal;
+    tr.innerHTML += `<td class="px-2 py-1 text-center font-bold text-indigo-600 bg-indigo-50 text-xs">${rowTotal}</td>`;
+    body.appendChild(tr);
+  });
 
-    // Normalize minutes → hours
-    if (Math.abs(m) >= 60) {
-      h += Math.trunc(m / 60);
-      m = m % 60;
-    }
+  const footerTr = document.getElementById("calcFooter");
+  footerTr.innerHTML = `
+    <td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs">Total</td>
+    ${sizes.map(s=>`<td class="border-r border-gray-200 px-2 py-1 text-center font-bold text-indigo-600 text-xs">${totals[s]}</td>`).join("")}
+    <td class="px-2 py-1 text-center font-bold text-sm text-indigo-600">${grand}</td>
+  `;
+}
 
-    // Normalize hours → 24
-    if (Math.abs(h) >= 24) {
-      h = h % 24;
-    }
-
-    row.querySelector(".hVal").value = h;
-    row.querySelector(".mVal").value = m;
-
-    return h * 60 + m;
-  }
-
-  function calculate() {
-    let totalMinutes = 0;
-
-    document.querySelectorAll("#inputs > div").forEach(row => {
-      const op = row.querySelector(".op").value;
-      const mins = normalizeInput(row);
-
-      totalMinutes += op === "add" ? mins : -mins;
-    });
-
-    const sign = totalMinutes < 0 ? "-" : "";
-    totalMinutes = Math.abs(totalMinutes);
-
-    let hours = Math.floor(totalMinutes / 60);
-    let minutes = totalMinutes % 60;
-
-    const use24 = document.getElementById("mode24").checked;
-    const useAmPm = document.getElementById("ampm").checked;
-
-    if (use24) hours = hours % 24;
-
-    let output;
-    if (useAmPm) {
-      const suffix = hours >= 12 ? "PM" : "AM";
-      const hr12 = hours % 12 === 0 ? 12 : hours % 12;
-      output = `${sign}${hr12}h ${minutes}m ${suffix}`;
-    } else {
-      output = `${sign}${hours}h ${minutes}m`;
-    }
-
-    document.getElementById("result").innerText = output;
-  }
-
-  autoBind();
-  calculate();
+renderCalc();
 </script>
 
 </body>
