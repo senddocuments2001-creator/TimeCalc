@@ -19,9 +19,30 @@
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       border-color: #667eea;
     }
-    button:hover {
-      transform: translateY(-2px);
-      transition: all 0.2s ease;
+    .header-input {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.375rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      background: #f8fafc;
+    }
+    .header-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #4a5568;
+      text-transform: uppercase;
+      margin-bottom: 0.1rem;
+      display: block;
+    }
+    /* Fixed width for Layer column to prevent jumping */
+    .col-layer {
+      width: 80px;
+      min-width: 80px;
+    }
+    .col-tp {
+      width: 120px;
+      min-width: 120px;
     }
   </style>
 </head>
@@ -30,39 +51,53 @@
 
 <div class="max-w-7xl mx-auto space-y-3">
 
-  <!-- ================= HEADER ================= -->
   <div class="flex justify-between items-center">
     <div>
       <h1 class="text-xl font-bold text-white mb-0.5">Project Creation</h1>
-      <p class="text-indigo-100 text-xs">Manage issues, metrics, and page calculations</p>
+      <p class="text-indigo-100 text-xs">Manage issues, metrics, and production details</p>
     </div>
-    <span class="px-2 py-0.5 bg-white/20 text-white rounded-full text-xs font-medium backdrop-blur-md">classmate</span>
+    <div class="flex gap-2">
+       <button onclick="addIssue()" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-bold shadow-lg transition-all flex items-center gap-1">
+         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+         Add Issue
+       </button>
+       <span class="px-2 py-0.5 bg-white/20 text-white rounded-full text-xs font-medium backdrop-blur-md flex items-center">classmate</span>
+    </div>
   </div>
 
-  <!-- ================= ISSUE + MTR SECTION ================= -->
+  <div class="glass-effect rounded-lg p-3 shadow-xl">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div><label class="header-label">Fabric Party Name</label><input type="text" class="header-input" placeholder="Name"></div>
+      <div><label class="header-label">Challan Number</label><input type="text" class="header-input" placeholder="CH-001"></div>
+      <div><label class="header-label">Lot Number</label><input type="text" class="header-input" placeholder="LOT-2024"></div>
+      <div><label class="header-label">Dealer Name</label><input type="text" class="header-input" placeholder="Dealer X"></div>
+      <div><label class="header-label">Cutting Date</label><input type="date" class="header-input"></div>
+      <div><label class="header-label">Fabric Received Date</label><input type="date" class="header-input"></div>
+    </div>
+  </div>
+
   <div class="grid grid-cols-3 gap-3">
 
-    <!-- Issue Table Card -->
     <div class="col-span-2 glass-effect rounded-lg p-3 shadow-xl">
       <h2 class="text-sm font-bold text-gray-800 mb-2 flex items-center gap-1">
         <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4z"/></svg>
         Issues & Metrics
       </h2>
       
-      <!-- Size Configuration -->
       <div class="mb-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
-        <p class="text-xs font-semibold text-gray-700 mb-2">Size Configuration (1-5)</p>
+        <p class="text-xs font-semibold text-gray-700 mb-2">Size Configuration (Quantity per Size)</p>
         <div class="grid grid-cols-9 gap-2" id="sizeInputs"></div>
       </div>
       
       <div class="overflow-x-auto rounded-lg border border-gray-200">
-        <table class="w-full text-xs">
+        <table class="w-full text-xs table-fixed">
           <thead class="bg-gradient-to-r from-indigo-50 to-purple-50">
             <tr>
               <th class="border-b border-gray-200 px-2 py-1.5 text-left font-semibold text-gray-700">Issue</th>
-              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">MTR</th>
-              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">TP</th>
-              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">Layer</th>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700 w-24">MTR</th>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700 col-tp">TP</th>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700 col-layer">Layer</th>
+              <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700 w-10"></th>
             </tr>
           </thead>
           <tbody id="issueTable" class="divide-y divide-gray-200"></tbody>
@@ -70,7 +105,6 @@
       </div>
     </div>
 
-    <!-- Page Meta Card -->
     <div class="glass-effect rounded-lg p-3 shadow-xl h-fit">
       <h2 class="text-sm font-bold text-gray-800 mb-2 flex items-center gap-1">
         <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zm8-8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z"/></svg>
@@ -85,31 +119,18 @@
           <p class="text-xs text-gray-600 font-medium mb-0.5">P VALUE</p>
           <p class="text-xs font-bold text-gray-800">54½ <span class="text-xs text-gray-600">≈ 53</span></p>
         </div>
-        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
-          <p class="text-xs text-gray-600 font-medium mb-0.5">LENGTH</p>
-          <p class="text-xs font-bold text-gray-800">43.25 <span class="text-xs text-gray-600">(41)</span></p>
-        </div>
-        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-2">
-          <p class="text-xs text-gray-600 font-medium mb-0.5">WASTE</p>
-          <p class="text-xs font-bold text-orange-600">+1.5</p>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= PAGE CALCULATION ================= -->
   <div class="glass-effect rounded-lg p-3 shadow-xl">
     <h2 class="text-sm font-bold text-gray-800 mb-2 flex items-center gap-1">
       <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
-      Page Calculations
+      Page Calculations (Size Config * Layer)
     </h2>
     <div class="overflow-x-auto rounded-lg border border-gray-200">
-      
       <table class="w-full text-xs">
-
-        
-        <thead id="calcHead" class="bg-gradient-to-r from-indigo-50 to-purple-50">
-        </thead>
+        <thead id="calcHead" class="bg-gradient-to-r from-indigo-50 to-purple-50"></thead>
         <tbody id="calcBody" class="divide-y divide-gray-200"></tbody>
         <tfoot class="bg-gradient-to-r from-gray-50 to-gray-100 border-t-2 border-gray-300">
           <tr id="calcFooter"></tr>
@@ -121,218 +142,117 @@
 </div>
 
 <script>
-/* ================= SIZE CONFIGURATION (28-44 EVEN) ================= */
+/* ================= SIZE CONFIGURATION ================= */
 const sizeConfig = {};
 const sizeInputsContainer = document.getElementById("sizeInputs");
 
-// Generate even numbers from 28 to 44
 for (let size = 28; size <= 44; size += 2) {
-  sizeConfig[size] = 1; // Default value
-  
+  sizeConfig[size] = 1; 
   const div = document.createElement("div");
   div.className = "bg-gradient-to-r from-indigo-200 to-purple-50 rounded-lg p-2";
   div.innerHTML = `
     <label class="text-xs font-bold text-gray-700 block mb-1">${size}</label>
-    <input type="number" min="1" max="5" value="1"
-      class="w-full text-center border border-gray-300 rounded px-2 py-1 text-xs bg-white hover:border-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-300"
-      oninput="
-        const val = Number(this.value);
-        if (val >= 1 && val <= 5) {
-          sizeConfig[${size}] = val;
-        } else {
-          this.value = sizeConfig[${size}];
-        }
-      ">
+    <input type="number" min="0" value="1"
+      class="w-full text-center border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:ring-2 focus:ring-indigo-300"
+      oninput="sizeConfig[${size}] = Number(this.value) || 0; renderCalc();">
   `;
   sizeInputsContainer.appendChild(div);
 }
 
-/* ================= ISSUE DATA ================= */
-const issues = [
-  { issue: "ISS01", mtr: 88.5, tp: [2], layer: [6] },
-  { issue: "ISS03", mtr: 105.25, tp: [3], layer: [6] },
-  { issue: "ISS07", mtr: 115.5, tp: [4], layer: [6] },
-  { issue: "ISS02", mtr: 100, tp: [5], layer: [6] },
-  { issue: "ISS04", mtr: 90, tp: [6], layer: [6] },
-  { issue: "ISS01", mtr: 100, tp: [7], layer: [6] },
-  { issue: "ISS09", mtr: 99.5, tp: [8], layer: [6] },
-  { issue: "ISS04", mtr: 82, tp: [9], layer: [6] },
-  { issue: "ISS20", mtr: 101, tp: [2], layer: [6] },
-  { issue: "ISS02", mtr: 106.5, tp: [3], layer: [6] },
+/* ================= ISSUE LOGIC ================= */
+let issues = [
+  { issue: "ISS01", mtr: 88.5, tp: [2], layer: [4] }
 ];
-const issueTable = document.getElementById("issueTable");
+
+function addIssue() {
+  // Find highest TP globally to suggest next
+  let maxTP = 0;
+  issues.forEach(iss => iss.tp.forEach(t => { if(t > maxTP) maxTP = t; }));
+  
+  issues.push({
+    issue: `ISS0${issues.length + 1}`,
+    mtr: 0,
+    tp: [maxTP + 1],
+    layer: [1]
+  });
+  renderIssues();
+}
+
+function removeIssue(idx) {
+  if (issues.length > 1) {
+    issues.splice(idx, 1);
+    renderIssues();
+  }
+}
 
 function renderIssues() {
+  const issueTable = document.getElementById("issueTable");
   issueTable.innerHTML = "";
   issues.forEach((r, i) => {
-    issueTable.innerHTML += `
-      <tr class="hover:bg-indigo-50/50 transition-colors">
-        <td class="border-r border-gray-200 px-2 py-1">
-          <input class="w-full text-center border border-gray-300 rounded px-1 py-0.5 text-xs font-medium bg-white hover:border-indigo-400 transition-colors"
-            value="${r.issue}"
-            oninput="issues[${i}].issue=this.value">
+    const row = document.createElement("tr");
+    row.className = "hover:bg-indigo-50/50 transition-colors";
+    row.innerHTML = `
+        <td class="border-r border-gray-200 px-2 py-2 vertical-align-top">
+          <input class="w-full text-center border border-gray-300 rounded px-1 py-1 text-xs font-medium bg-white"
+            value="${r.issue}" oninput="issues[${i}].issue=this.value">
         </td>
-
-        <td class="border-r border-gray-200 px-2 py-1">
-          <input type="number" class="w-full text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
-            value="${r.mtr}"
-            oninput="issues[${i}].mtr=Number(this.value)||0">
+        <td class="border-r border-gray-200 px-2 py-2">
+          <input type="number" class="w-full text-center border border-gray-300 rounded px-1 py-1 text-xs bg-white"
+            value="${r.mtr}" oninput="issues[${i}].mtr=Number(this.value)||0; renderCalc();">
         </td>
-
-        <td class="border-r border-gray-200 px-2 py-1">
-          <div class="space-y-0.5" id="tp-container-${i}"></div>
-          <button class="mt-0.5 w-full px-1 py-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-semibold rounded hover:shadow-lg transition-all"
-            onclick="addTP(${i})">+ TP</button>
+        <td class="border-r border-gray-200 px-2 py-2 col-tp">
+          <div class="space-y-1" id="tp-container-${i}"></div>
+          <button class="mt-1 w-full py-1 bg-indigo-500 text-white text-[10px] rounded font-bold" onclick="addTP(${i})">+ TP</button>
         </td>
-
-        <td class="px-2 py-1">
-          <div class="space-y-0.5" id="layer-container-${i}"></div>
+        <td class="border-r border-gray-200 px-2 py-2 col-layer">
+          <div class="space-y-1" id="layer-container-${i}"></div>
         </td>
-      </tr>
+        <td class="px-2 py-2 text-center">
+          <button onclick="removeIssue(${i})" class="text-red-400 hover:text-red-600">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+          </button>
+        </td>
     `;
+    issueTable.appendChild(row);
+
+    document.getElementById(`tp-container-${i}`).innerHTML = r.tp.map((tpVal, tpIdx) => `
+      <div class="flex gap-1 items-center">
+        <input type="number" class="w-full text-center border border-gray-300 rounded text-xs p-1"
+          value="${tpVal}" oninput="issues[${i}].tp[${tpIdx}]=Number(this.value)||0; renderCalc();">
+        <button class="text-red-500 text-xs px-1" onclick="removeTP(${i}, ${tpIdx})">×</button>
+      </div>
+    `).join("");
+
+    document.getElementById(`layer-container-${i}`).innerHTML = r.layer.map((layerVal, layerIdx) => `
+      <div class="h-[26px] flex items-center">
+        <input type="number" class="w-full text-center border border-gray-300 rounded text-xs p-1"
+          value="${layerVal}" oninput="issues[${i}].layer[${layerIdx}]=Number(this.value)||0; renderCalc();">
+      </div>
+    `).join("");
   });
-  
-  // Render TP inputs after table is populated
-  issues.forEach((r, i) => {
-    const container = document.getElementById(`tp-container-${i}`);
-    if (container) {
-      container.innerHTML = r.tp.map((tpVal, tpIdx) => `
-        <div class="flex gap-1">
-          <input type="number" class="flex-1 text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
-            value="${tpVal}"
-            oninput="issues[${i}].tp[${tpIdx}]=Number(this.value)||0">
-          <button class="px-1 py-0.5 bg-red-500 text-white text-xs rounded hover:bg-red-600 hover:shadow-lg transition-all font-semibold"
-            onclick="removeTP(${i}, ${tpIdx})">✕</button>
-        </div>
-      `).join("");
-    }
-    
-    // Render Layer inputs
-    const layerContainer = document.getElementById(`layer-container-${i}`);
-    if (layerContainer) {
-      layerContainer.innerHTML = r.layer.map((layerVal, layerIdx) => `
-        <div class="flex gap-1">
-          <input type="number" class="flex-1 text-center border border-gray-300 rounded px-1 py-0.5 text-xs bg-white hover:border-indigo-400 transition-colors"
-            value="${layerVal}"
-            oninput="issues[${i}].layer[${layerIdx}]=Number(this.value)||0">
-        </div>
-      `).join("");
-    }
-  });
+  renderCalc();
 }
 
 function addTP(issueIdx) {
-  // Find the maximum TP value in the CURRENT issue
-  const currentMaxTP = Math.max(...issues[issueIdx].tp);
+  const currentTPs = issues[issueIdx].tp;
+  const currentLayers = issues[issueIdx].layer;
+  const lastTP = currentTPs[currentTPs.length - 1];
+  const lastLayer = currentLayers[currentLayers.length - 1];
   
-  // Add new TP to current issue (increment by 1)
-  issues[issueIdx].tp.push(currentMaxTP + 1);
-  issues[issueIdx].layer.push(6);
-  
-  // Update all subsequent rows - each gets the next incremental number
-  let nextTP = currentMaxTP + 2;
-  for (let i = issueIdx + 1; i < issues.length; i++) {
-    // Check if this row already has TPs
-    if (issues[i].tp.length > 0) {
-      // Update the first TP of this row to be the next sequential number
-      issues[i].tp[0] = nextTP;
-      nextTP++;
-    }
-  }
-  
+  issues[issueIdx].tp.push(lastTP + 1);
+  issues[issueIdx].layer.push(lastLayer); // Keeps previous layer value
   renderIssues();
 }
 
 function removeTP(issueIdx, tpIdx) {
   if (issues[issueIdx].tp.length > 1) {
     issues[issueIdx].tp.splice(tpIdx, 1);
-    issues[issueIdx].layer.splice(tpIdx, 1); // Remove corresponding layer
+    issues[issueIdx].layer.splice(tpIdx, 1);
     renderIssues();
   }
 }
 
-renderIssues();
-
-/* ================= PAGE CALC DATA ================= */
-const sizes = [];
-for (let s = 28; s <= 44; s += 2) {
-  sizes.push(s);
-}
-
-function buildPagesFromTP() {
-  // total TP count
-  const totalTP = issues.reduce((sum, i) => sum + i.tp.length, 0);
-
-  const pages = [];
-
-  for (let i = 0; i < totalTP; i++) {
-    const v = {};
-    sizes.forEach(s => v[s] = 0); // initialize all sizes
-
-    pages.push({
-      page: 2 + i,
-      v
-    });
-  }
-
-  return pages;
-}
-
-
-
-let pages = [
-  { page: 2, v:{30:28,32:42,34:42,36:28} },
-  { page: 3, v:{30:12,32:18,34:18,36:12} },
-  { page: 4, v:{30:12,32:18,34:18,36:12} },
-  { page: 5, v:{30:14,32:21,34:21,36:14} },
-  { page: 6, v:{30:12,32:18,34:18,36:12} },
-  { page: 7, v:{30:12,32:18,34:18,36:12} },
-  { page: 8, v:{30:12,32:18,34:18,36:12} },
-  { page: 9, v:{30:12,32:18,34:18,36:12} },
-];
-
-const body = document.getElementById("calcBody");
-const footer = document.getElementById("calcFooter");
-
-function renderCalcHead() {
-  const thead = document.getElementById("calcHead");
-  thead.innerHTML = "";
-
-  if (!pages.length) return;
-
-  // extract sizes from pages variable
-  const sizes = Object.keys(pages[0].v);
-
-  const tr = document.createElement("tr");
-
-  // Page column
-  tr.innerHTML = `
-    <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">
-      Page
-    </th>
-  `;
-
-  // Size columns
-  sizes.forEach(s => {
-    tr.innerHTML += `
-      <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">
-        ${s}
-      </th>
-    `;
-  });
-
-  // Total column
-  tr.innerHTML += `
-    <th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-indigo-600 bg-indigo-50">
-      Total
-    </th>
-  `;
-
-  thead.appendChild(tr);
-}
-
-/* ================= UPDATED CALCULATION LOGIC ================= */
-
+/* ================= CALCULATION ================= */
 function renderCalc() {
   const body = document.getElementById("calcBody");
   const footerTr = document.getElementById("calcFooter");
@@ -341,84 +261,46 @@ function renderCalc() {
   body.innerHTML = "";
   thead.innerHTML = "";
 
-  // 1. Prepare Sizes (28-44)
   const sizes = [];
   for (let s = 28; s <= 44; s += 2) sizes.push(s);
 
-  // 2. Render Header
   let headHtml = `<th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">Page (TP)</th>`;
-  sizes.forEach(s => {
-    headHtml += `<th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">${s}</th>`;
-  });
+  sizes.forEach(s => { headHtml += `<th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-gray-700">${s}</th>`; });
   headHtml += `<th class="border-b border-gray-200 px-2 py-1.5 text-center font-semibold text-indigo-600 bg-indigo-50">Total</th>`;
   thead.innerHTML = headHtml;
 
-  // 3. Flatten Issues to "TP Rows"
-  // This creates a flat list of every TP assigned across all issues
-  const allTPRows = [];
-  issues.forEach(issue => {
-    issue.tp.forEach((tpValue, idx) => {
-      allTPRows.push({
-        tp: tpValue,
-        layer: issue.layer[idx] || 0
-      });
-    });
-  });
-
-  // 4. Calculate and Render Rows
   const columnTotals = {};
   sizes.forEach(s => columnTotals[s] = 0);
   let grandTotal = 0;
 
-  allTPRows.forEach((row) => {
-    let rowTotal = 0;
-    const tr = document.createElement("tr");
-    tr.className = "hover:bg-indigo-50/50 transition-colors";
+  issues.forEach(issue => {
+    issue.tp.forEach((tpValue, idx) => {
+      let rowTotal = 0;
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-indigo-50/50 transition-colors";
+      tr.innerHTML = `<td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs text-center">TP ${tpValue}</td>`;
 
-    // TP Label Column
-    tr.innerHTML = `<td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs">TP ${row.tp}</td>`;
+      sizes.forEach(s => {
+        const val = (sizeConfig[s] || 0) * (issue.layer[idx] || 0);
+        rowTotal += val;
+        columnTotals[s] += val;
+        tr.innerHTML += `<td class="border-r border-gray-200 px-2 py-1 text-center text-xs text-gray-600">${val}</td>`;
+      });
 
-    sizes.forEach(s => {
-      // LOGIC: Size Config Value * Layer Value
-      const sizeConfigVal = sizeConfig[s] || 0;
-      const calculatedValue = sizeConfigVal * row.layer;
-      
-      rowTotal += calculatedValue;
-      columnTotals[s] += calculatedValue;
-
-      tr.innerHTML += `
-        <td class="border-r border-gray-200 px-2 py-1 text-center text-xs text-gray-600">
-          ${calculatedValue}
-        </td>`;
+      grandTotal += rowTotal;
+      tr.innerHTML += `<td class="px-2 py-1 text-center font-bold text-indigo-600 bg-indigo-50 text-xs">${rowTotal}</td>`;
+      body.appendChild(tr);
     });
-
-    grandTotal += rowTotal;
-    tr.innerHTML += `<td class="px-2 py-1 text-center font-bold text-indigo-600 bg-indigo-50 text-xs">${rowTotal}</td>`;
-    body.appendChild(tr);
   });
 
-  // 5. Render Footer
   footerTr.innerHTML = `
-    <td class="border-r border-gray-200 px-2 py-1 font-semibold text-gray-700 text-xs">Total</td>
-    ${sizes.map(s => `
-      <td class="border-r border-gray-200 px-2 py-1 text-center font-bold text-indigo-600 text-xs">${columnTotals[s]}</td>
-    `).join("")}
+    <td class="border-r border-gray-200 px-2 py-1 font-bold text-gray-700 text-xs text-center">Total</td>
+    ${sizes.map(s => `<td class="border-r border-gray-200 px-2 py-1 text-center font-bold text-indigo-600 text-xs">${columnTotals[s]}</td>`).join("")}
     <td class="px-2 py-1 text-center font-bold text-sm text-indigo-600">${grandTotal}</td>
   `;
 }
 
-// Ensure Size Configuration inputs trigger a re-calculation
-// Update your Size Config loop (around line 140) to include renderCalc():
-/* oninput="
-    const val = Number(this.value);
-    if (val >= 1 && val <= 5) {
-      sizeConfig[${size}] = val;
-      renderCalc(); // <--- Add this
-    }
-    ...
-*/
-renderCalc();
-
+renderIssues();
 </script>
 
 </body>
